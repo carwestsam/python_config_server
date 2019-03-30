@@ -24,16 +24,11 @@ def readConfFuncGenerator(filepath, version):
     return __readConfig
 
 
-if "services" in app_conf:
-    for service in app_conf['services']:
-        service_conf = app_conf['services'][service]
-        # print('conf service:', service)
-        dir = service
-        if 'dir' in service_conf:
-            dir = service_conf['dir']
+for service_dir_name in os.listdir(base_url):
+    if isdir(os.path.join(base_url, service_dir_name)):
+        service = service_dir_name
+        service_dir = os.path.join(base_url + service_dir_name)
 
-        service_dir = os.path.join(base_url + dir)
-        # print('service_dir', service_dir)
         latest = {}
         for version in os.listdir(service_dir):
             version_dir = os.path.join(service_dir, version)
