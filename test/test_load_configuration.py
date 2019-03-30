@@ -11,4 +11,4 @@ class TestLoadConfiguration(unittest.TestCase):
         from main import app
         client = TestClient(app)
         data = ujson.loads(client.request('GET', '/config/config.json').content)
-        self.assertEqual(data['foo'], 'bar')
+        self.assertEqual(data['version'], '20190329')
