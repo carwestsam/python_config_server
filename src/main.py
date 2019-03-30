@@ -13,7 +13,6 @@ base_url = os.path.abspath(os.environ['CONFIG_URI'].replace('file://', '')) + '/
 with open(os.path.join(base_url + 'config.json'), 'rb') as conf_file:
     config = ''.join([line.decode('utf-8') for line in conf_file.readlines()])
     app_conf = json.loads(config)
-    # print('loaded', app_conf)
 
 
 def readConfFuncGenerator(filepath, version):
