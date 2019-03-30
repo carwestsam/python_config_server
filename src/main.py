@@ -60,6 +60,7 @@ if "services" in app_conf:
                 readConfFuncGenerator(latest[env_conf]['config_path'],
                                       latest[env_conf]['version']))
 
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -75,5 +76,20 @@ async def print_file(filename: str):
     async with AIOFile(os.path.join(base_url + filename), 'rb') as file:
         data = await file.read(4096)
         conf = json.loads(data)
-        print(conf)
+        # print(conf)
         return conf
+
+
+@app.get("/config/{service_name}/{version}/{env_name}")
+async def discover_service_configuration(service_name, version, env_name):
+    # print('==', base_url,service_name, version, env_name)
+    file_path = '{}{}/{}/{}.json'.format(base_url, service_name, version, env_name)
+    route_path = '/config/{}/{}/{}'.format(service_name, version, env_name)
+    # print('discover', file_path, route_path, isfile(file_path))
+    if isfile(file_path):
+        app.get(route_path)(readConfFuncGenerator(file_path, version))
+        async with AIOFile(file_path, 'rb') as file:
+            data = await file.read(MAX_CONFIG_FILE_SIZE)
+            return {'version': version, 'config': json.loads(data)}
+    else:
+        return {"error": "config not found"}

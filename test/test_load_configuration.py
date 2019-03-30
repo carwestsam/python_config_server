@@ -3,10 +3,13 @@ import os
 import ujson as ujson
 from starlette.testclient import TestClient
 
-conf_path = os.environ['CONFIG_URI'] = 'file://' + os.getcwd() + '/test_configs/sample_config/'
-
+conf_path = 'file://' + os.path.dirname(
+    os.path.realpath(__file__)) + '/test_configs/dynamic_config'
 
 class TestLoadConfiguration(unittest.TestCase):
+    def setUp(self):
+        os.environ['CONFIG_URI'] = conf_path
+
     def test_initial_config_path(self):
         from main import app
         client = TestClient(app)
