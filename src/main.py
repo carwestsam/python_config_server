@@ -4,6 +4,7 @@ import ujson as json
 import os
 
 app = FastAPI()
+base_url = os.environ['CONFIG_URI'].replace('file://', '')
 
 
 @app.get("/")
@@ -18,7 +19,7 @@ def list_configs():
 
 @app.get("/config/{filename}")
 async def print_file(filename: str):
-    async with AIOFile(os.environ['PWD'] + '/../sample_config/' + filename, 'rb') as file:
+    async with AIOFile(os.path.join(base_url + filename), 'rb') as file:
         data = await file.read(4096)
         conf = json.loads(data)
         print(conf)
