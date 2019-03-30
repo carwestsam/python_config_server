@@ -38,6 +38,7 @@ if "services" in app_conf:
         latest = {}
         for version in os.listdir(service_dir):
             version_dir = os.path.join(service_dir, version)
+            # print('version', version)
             if isdir(version_dir):
                 for env_conf_name in os.listdir(version_dir):
                     env_conf_path = os.path.join(version_dir, env_conf_name)
@@ -46,8 +47,18 @@ if "services" in app_conf:
                         route_path = "/config/{}/{}/{}".format(service, version, env_conf)
                         app.get(route_path)(readConfFuncGenerator(env_conf_path, version))
 
-        # version_list = [dir for dir in os.listdir(service_dir) if isdir(os.path.join(service_dir, dir))]
+                        if env_conf not in latest or latest[env_conf]['version'] < version:
+                            latest[env_conf] = {
+                                "version": version,
+                                "config_path": env_conf_path
+                            }
 
+        for env_conf in latest:
+            route_path = '/config/{}/latest/{}'.format(service, env_conf)
+            # print('add ', route_path, latest[env_conf]['version'])
+            app.get(route_path)(
+                readConfFuncGenerator(latest[env_conf]['config_path'],
+                                      latest[env_conf]['version']))
 
 @app.get("/")
 def read_root():

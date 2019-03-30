@@ -1,0 +1,8 @@
+{
+  "version": "20190329",
+  "services": {
+    "account-service": {
+      "dir": "account-service"
+    }
+  }
+}
